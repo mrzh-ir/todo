@@ -16,12 +16,14 @@ export class AppComponent implements OnInit {
     this.items = await this.todoService.fetchItems();
   }
 
-  listItemSelected(itemToBeRemoved: string) {
+  async listItemSelected(itemToBeRemoved: string) {
     this.items = this.items.filter((item) => item !== itemToBeRemoved);
+    await this.todoService.completeItem(itemToBeRemoved);
   }
 
-  addItem() {
+  async addItem() {
     this.items.push(this.newItem);
+    await this.todoService.addItem(this.newItem);
     this.newItem = '';
   }
 }

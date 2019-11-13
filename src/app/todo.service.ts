@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FetchListRequest, FetchListResponse } from './../proto/todo_service_pb';
+import { AddItemRequest, CompleteItemRequest, FetchListRequest, FetchListResponse } from './../proto/todo_service_pb';
 import { TodoServiceClient } from './../proto/Todo_serviceServiceClientPb';
 import * as grpcWeb from 'grpc-web';
 
@@ -21,6 +21,34 @@ export class TodoService {
           resolve(response.getItemsList());
         }
       });  
+    });
+  }
+
+  async addItem(item: string): Promise<void> {
+    const request = new AddItemRequest();
+    request.setLabel(item);
+    return new Promise<void>((resolve, reject) => {
+      this.client.addItem(request, {}, (err, _) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    });
+  }
+
+  async completeItem(item: string): Promise<void> {
+    const request = new CompleteItemRequest();
+    request.setLabel(item);
+    return new Promise<void>((resolve, reject) => {
+      this.client.completeItem(request, {}, (err, _) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
     });
   }
 }
