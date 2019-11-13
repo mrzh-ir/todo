@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package todo;
+
+service TodoService {
+    rpc FetchList(FetchListRequest) returns (FetchListResponse);
+
+    rpc AddItem(AddItemRequest) returns (AddItemResponse);
+
+    rpc CompleteItem(CompleteItemRequest) returns (CompleteItemResponse);
+}
+
+message FetchListRequest {}
+
+message FetchListResponse {
+    repeated string items = 1;
+}
+
+message AddItemRequest {
+    string label = 1;
+}
+
+message AddItemResponse {}
+
+message CompleteItemRequest {
+    string label = 1;
+}
+
+message CompleteItemResponse {}
