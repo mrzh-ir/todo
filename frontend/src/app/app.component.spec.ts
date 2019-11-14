@@ -150,6 +150,38 @@ describe('AppComponent', () => {
     }
   });
 
+  describe('New item form elements', () => {
+    beforeEach(async(() => {
+      fixture = TestBed.createComponent(AppComponent);
+      fixture.detectChanges();
+    }));
+
+    it('displays the amount input when shopping item selected', async () => {
+      await selectItemType('shopping');
+
+      expect(amountInputFormElement()).toBeTruthy();
+    });
+
+    for (let type of ['task', 'recurring']) {
+      it(`hides the amount input when ${type} selected`, async () => {
+        await selectItemType(type);
+
+        expect(amountInputFormElement()).not.toBeTruthy();
+      });
+    }
+
+    async function selectItemType(type: string) {
+      fixture.debugElement.query(By.css('.new-item-type-select .mat-select-trigger')).nativeElement.click();
+      fixture.detectChanges();
+      fixture.debugElement.query(By.css(`mat-option.item-type[value="${type}"]`)).nativeElement.click();
+      await fixture.whenStable();
+    }
+
+    function amountInputFormElement(): DebugElement {
+      return fixture.debugElement.query(By.css('.amount-input'));
+    }
+  });
+
   function itemsList(): string[] {
     return fixture.debugElement
         .queryAll(By.css('#todo-list mat-list-option'))
