@@ -22,7 +22,7 @@
         <input matInput placeholder="New item..." id="label-input" [(ngModel)]="newItemLabel">
       </mat-form-field>
     </div>
-    <div>
+    <div class="deadline-part" *ngIf="newItemType == 'task'">
       To be completed by:
       <mat-form-field class="new-item-form-element">
         <input matInput [matDatepicker]="deadline" placeholder="Deadline" id="deadline-input">
@@ -30,7 +30,7 @@
         <mat-datepicker #deadline></mat-datepicker>
       </mat-form-field>
     </div>
-    <div>
+    <div class="repeat-part" *ngIf="newItemType == 'recurring'">
       Repeat every:
       <mat-form-field class="new-item-form-element frequency-input">
         <input matInput type="number" placeholder="Frequency" id="frequency-input" [(ngModel)]="itemFrequency">

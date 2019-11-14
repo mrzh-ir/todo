@@ -170,6 +170,33 @@ describe('AppComponent', () => {
       });
     }
 
+    it('displays the deadline input when task selected', async () => {
+      await selectItemType('task');
+
+      expect(deadlinePart()).toBeTruthy();
+    });
+
+    for (let type of ['recurring', 'shopping']) {
+      it(`hides the deadline input when ${type} selected`, async () => {
+        await selectItemType(type);
+
+        expect(deadlinePart()).not.toBeTruthy();
+      });
+    }
+
+    it('displays the repeat input when recurring selected', async () => {
+      await selectItemType('recurring');
+
+      expect(repeatPart()).toBeTruthy();
+    });
+
+    for (let type of ['task', 'shopping']) {
+      it(`hides the repeat input when ${type} selected`, async () => {
+        await selectItemType(type);
+
+        expect(repeatPart()).not.toBeTruthy();
+      });
+    }
     async function selectItemType(type: string) {
       fixture.debugElement.query(By.css('.new-item-type-select .mat-select-trigger')).nativeElement.click();
       fixture.detectChanges();
@@ -179,6 +206,14 @@ describe('AppComponent', () => {
 
     function amountInputFormElement(): DebugElement {
       return fixture.debugElement.query(By.css('.amount-input'));
+    }
+
+    function deadlinePart(): DebugElement {
+      return fixture.debugElement.query(By.css('.deadline-part'));
+    }
+
+    function repeatPart(): DebugElement {
+      return fixture.debugElement.query(By.css('.repeat-part'));
     }
   });
 
