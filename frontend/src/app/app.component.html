@@ -43,7 +43,7 @@
       </mat-select>
       </div>
     <mat-card-footer>
-      <button mat-button id="add-item-button" (click)="addItem()" [disabled]="newItemLabel == ''" class="add-item-button">Add</button>
+      <button mat-button id="add-item-button" (click)="addItem()" [disabled]="!canAdd" class="add-item-button">Add</button>
     </mat-card-footer>
   </mat-card>
 </div>

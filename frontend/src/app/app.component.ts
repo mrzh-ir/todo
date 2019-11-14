@@ -27,6 +27,10 @@ export class AppComponent implements OnInit {
     await this.todoService.completeItem(itemToBeRemoved);
   }
 
+  get canAdd(): boolean {
+    return !!this.newItemLabel && (this.newItemType !== 'recurring' || !!this.itemFrequency);
+  }
+
   async addItem() {
     this.items.push(this.newItemLabel);
     await this.todoService.addItem(this.newItemLabel);

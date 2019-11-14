@@ -141,14 +141,31 @@ describe('AppComponent', () => {
       expect(completedItems).toContain('An item');
     });
 
-    it('disables the add button until text is entered', () => {
-      expect(addItemButton().nativeElement.attributes['disabled']).toBeTruthy;
+    it('disables the add button until label is entered', () => {
+      expect(addItemButton().nativeElement.disabled).toBeTruthy();
     });
 
-    it('enables the add button when text is entered', () => {
+    it('disables the add button for recurring item until frequency is entered', () => {
       inputText(addItemInput(), 'An item');
 
-      expect(addItemButton().nativeElement.attributes['disabled']).not.toBeTruthy;
+      selectItemType('recurring');
+
+      expect(addItemButton().nativeElement.disabled).toBeTruthy();
+    });
+
+    it('enables the add button when label is entered', () => {
+      inputText(addItemInput(), 'An item');
+
+      expect(addItemButton().nativeElement.disabled).toBeFalsy();
+    });
+
+    it('enables the add button for recurring item when frequency is entered', () => {
+      inputText(addItemInput(), 'An item');
+      selectItemType('recurring');
+
+      inputText(frequencyInput(), '1');
+
+      expect(addItemButton().nativeElement.disabled).toBeFalsy();
     });
 
     async function addItemToList(item: string) {
@@ -188,6 +205,18 @@ describe('AppComponent', () => {
     function inputText(element: DebugElement, value: string) {
       element.nativeElement.value = value;
       element.nativeElement.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+    }
+
+    async function selectPeriod(period: string) {
+      fixture.debugElement.query(By.css('.period-select .mat-select-trigger')).nativeElement.click();
+      fixture.detectChanges();
+      fixture.debugElement.query(By.css(`mat-option.period[value="${period}"]`)).nativeElement.click();
+      await fixture.whenStable();
+    }
+
+    function selectedPeriod(): string {
+      return fixture.debugElement.query(By.css('.period-select')).nativeElement.innerText.trim();
     }
 
     async function selectPeriod(period: string) {
