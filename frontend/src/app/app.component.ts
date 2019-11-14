@@ -28,6 +28,10 @@ export class AppComponent implements OnInit {
   async addItem() {
     this.items.push(this.newItemLabel);
     await this.todoService.addItem(this.newItemLabel);
+    this.resetForm();
+  }
+
+  private resetForm() {
     this.newItemLabel = '';
     this.itemAmount = null;
   }
