@@ -29,5 +29,6 @@ export class AppComponent implements OnInit {
     this.items.push(this.newItemLabel);
     await this.todoService.addItem(this.newItemLabel);
     this.newItemLabel = '';
+    this.itemAmount = null;
   }
 }

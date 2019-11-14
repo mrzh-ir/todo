@@ -90,10 +90,18 @@ describe('AppComponent', () => {
       expect(addedItems).toContain('An item');
     });
 
-    it('clears the input once the button is clicked', async () => {
+    it('clears the label input once the add button is clicked', async () => {
       await addItemToList('An item');
 
       expect(addItemInput().nativeElement.value).toEqual('');
+    });
+
+    it('clears the amount input once the add button is clicked', async () => {
+      await selectItemType('shopping');
+      await inputText(amountInput(), '100');
+      await addItemToList('An item');
+
+      expect(amountInput().nativeElement.value).toEqual('');
     });
 
     it('removes an item from the list', async () => {
@@ -138,6 +146,10 @@ describe('AppComponent', () => {
 
     function addItemInput(): DebugElement {
       return fixture.debugElement.query(By.css('#label-input'));
+    }
+
+    function amountInput(): DebugElement {
+      return fixture.debugElement.query(By.css('#amount-input'));
     }
 
     function addItemButton(): DebugElement {
@@ -197,12 +209,6 @@ describe('AppComponent', () => {
         expect(repeatPart()).not.toBeTruthy();
       });
     }
-    async function selectItemType(type: string) {
-      fixture.debugElement.query(By.css('.new-item-type-select .mat-select-trigger')).nativeElement.click();
-      fixture.detectChanges();
-      fixture.debugElement.query(By.css(`mat-option.item-type[value="${type}"]`)).nativeElement.click();
-      await fixture.whenStable();
-    }
 
     function amountInputFormElement(): DebugElement {
       return fixture.debugElement.query(By.css('.amount-input'));
@@ -216,6 +222,13 @@ describe('AppComponent', () => {
       return fixture.debugElement.query(By.css('.repeat-part'));
     }
   });
+
+  async function selectItemType(type: string) {
+    fixture.debugElement.query(By.css('.new-item-type-select .mat-select-trigger')).nativeElement.click();
+    fixture.detectChanges();
+    fixture.debugElement.query(By.css(`mat-option.item-type[value="${type}"]`)).nativeElement.click();
+    await fixture.whenStable();
+  }
 
   function itemsList(): string[] {
     return fixture.debugElement
