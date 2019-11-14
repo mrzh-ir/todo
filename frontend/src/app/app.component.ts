@@ -8,7 +8,11 @@ import { TodoService } from './todo.service';
 })
 export class AppComponent implements OnInit {
   items: string[] = [];
-  newItem = '';
+  newItemLabel = '';
+  itemAmount: number = null;
+  itemFrequency: number = null;
+  repeatPeriod = 'days';
+  newItemType = 'task';
 
   constructor(private todoService: TodoService) {}
 
@@ -22,8 +26,8 @@ export class AppComponent implements OnInit {
   }
 
   async addItem() {
-    this.items.push(this.newItem);
-    await this.todoService.addItem(this.newItem);
-    this.newItem = '';
+    this.items.push(this.newItemLabel);
+    await this.todoService.addItem(this.newItemLabel);
+    this.newItemLabel = '';
   }
 }

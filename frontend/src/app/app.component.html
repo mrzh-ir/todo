@@ -5,8 +5,46 @@
     <mat-list-option *ngFor="let item of items" value="{{item}}">{{item}}</mat-list-option>
   </mat-selection-list>
 
-  <mat-form-field>
-    <input matInput placeholder="New item..." id="add-item-input" [(ngModel)]="newItem">
-  </mat-form-field>
-  <button mat-button id="add-item-button" (click)="addItem()" [disabled]="newItem == ''">Add</button>
+  <mat-card>
+    <mat-card-title>New item</mat-card-title>
+    <div>
+      <mat-select [(value)]="newItemType" class="new-item-type-select">
+        <mat-option value="task">One-time task</mat-option>
+        <mat-option value="recurring">Recurring item</mat-option>
+        <mat-option value="shopping">Shopping list item</mat-option>
+      </mat-select>
+    </div>
+    <div>
+      <mat-form-field class="new-item-form-element amount-input">
+        <input matInput type="number" placeholder="Amount" id="amount-input" [(ngModel)]="itemAmount">
+      </mat-form-field>
+      <mat-form-field class="new-item-form-element label-input">
+        <input matInput placeholder="New item..." id="label-input" [(ngModel)]="newItemLabel">
+      </mat-form-field>
+    </div>
+    <div>
+      To be completed by:
+      <mat-form-field class="new-item-form-element">
+        <input matInput [matDatepicker]="deadline" placeholder="Deadline" id="deadline-input">
+        <mat-datepicker-toggle matSuffix [for]="deadline"></mat-datepicker-toggle>
+        <mat-datepicker #deadline></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div>
+      Repeat every:
+      <mat-form-field class="new-item-form-element frequency-input">
+        <input matInput type="number" placeholder="Frequency" id="frequency-input" [(ngModel)]="itemFrequency">
+      </mat-form-field>
+      <mat-select [(value)]="repeatPeriod" class="period-select">
+        <mat-option value="days">days</mat-option>
+        <mat-option value="weeks">weeks</mat-option>
+        <mat-option value="months">months</mat-option>
+        <mat-option value="years">years</mat-option>
+      </mat-select>
+      </div>
+    <mat-card-footer>
+      <button mat-button id="add-item-button" (click)="addItem()" [disabled]="newItemLabel == ''" class="add-item-button">Add</button>
+    </mat-card-footer>
+    <!-- TODO: Frequency (recurring item) -->
+  </mat-card>
 </div>

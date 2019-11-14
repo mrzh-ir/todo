@@ -2,9 +2,13 @@ import { DebugElement } from '@angular/core';
 import { TestBed, async, ComponentFixture, ComponentFixtureAutoDetect } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -44,9 +48,13 @@ describe('AppComponent', () => {
       imports: [
         FormsModule,
         MatButtonModule,
+        MatCardModule,
+        MatDatepickerModule,
         MatFormFieldModule,
         MatInputModule,
         MatListModule,
+        MatMomentDateModule,
+        MatSelectModule,
         NoopAnimationsModule,
       ],
       providers: [
@@ -129,7 +137,7 @@ describe('AppComponent', () => {
     }
 
     function addItemInput(): DebugElement {
-      return fixture.debugElement.query(By.css('#add-item-input'));
+      return fixture.debugElement.query(By.css('#label-input'));
     }
 
     function addItemButton(): DebugElement {
