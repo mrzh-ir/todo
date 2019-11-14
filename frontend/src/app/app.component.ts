@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Moment } from 'moment';
 import { TodoService } from './todo.service';
 
 @Component({
@@ -11,6 +12,7 @@ export class AppComponent implements OnInit {
   newItemLabel = '';
   itemAmount: number = null;
   itemFrequency: number = null;
+  itemDeadline: Moment = null;
   repeatPeriod = 'days';
   newItemType = 'task';
 
@@ -34,5 +36,6 @@ export class AppComponent implements OnInit {
   private resetForm() {
     this.newItemLabel = '';
     this.itemAmount = null;
+    this.itemDeadline = null;
   }
 }

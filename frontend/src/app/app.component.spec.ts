@@ -104,6 +104,14 @@ describe('AppComponent', () => {
       expect(amountInput().nativeElement.value).toEqual('');
     });
 
+    it('clears the deadline input once the add button is clicked', async () => {
+      await selectItemType('task');
+      await inputText(deadlineInput(), '01/01/2020');
+      await addItemToList('An item');
+
+      expect(deadlineInput().nativeElement.value).toEqual('');
+    });
+
     it('removes an item from the list', async () => {
       await addItemToList('An item');
 
@@ -150,6 +158,10 @@ describe('AppComponent', () => {
 
     function amountInput(): DebugElement {
       return fixture.debugElement.query(By.css('#amount-input'));
+    }
+
+    function deadlineInput(): DebugElement {
+      return fixture.debugElement.query(By.css('#deadline-input'));
     }
 
     function addItemButton(): DebugElement {

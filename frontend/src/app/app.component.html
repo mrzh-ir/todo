@@ -25,7 +25,7 @@
     <div class="deadline-part" *ngIf="newItemType == 'task'">
       To be completed by:
       <mat-form-field class="new-item-form-element">
-        <input matInput [matDatepicker]="deadline" placeholder="Deadline" id="deadline-input">
+        <input matInput [matDatepicker]="deadline" placeholder="Deadline" id="deadline-input" [(ngModel)]="itemDeadline">
         <mat-datepicker-toggle matSuffix [for]="deadline"></mat-datepicker-toggle>
         <mat-datepicker #deadline></mat-datepicker>
       </mat-form-field>
