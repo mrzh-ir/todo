@@ -99,6 +99,7 @@ describe('AppComponent', () => {
     it('clears the amount input once the add button is clicked', async () => {
       await selectItemType('shopping');
       await inputText(amountInput(), '100');
+
       await addItemToList('An item');
 
       expect(amountInput().nativeElement.value).toEqual('');
@@ -107,9 +108,21 @@ describe('AppComponent', () => {
     it('clears the deadline input once the add button is clicked', async () => {
       await selectItemType('task');
       await inputText(deadlineInput(), '01/01/2020');
+
       await addItemToList('An item');
 
       expect(deadlineInput().nativeElement.value).toEqual('');
+    });
+
+    it('clears the frequency input once the add button is clicked', async () => {
+      await selectItemType('recurring');
+      await inputText(frequencyInput(), '2');
+      await selectPeriod('weeks');
+
+      await addItemToList('An item');
+
+      expect(frequencyInput().nativeElement.value).toEqual('');
+      expect(selectedPeriod()).toBe('days');
     });
 
     it('removes an item from the list', async () => {
@@ -160,6 +173,10 @@ describe('AppComponent', () => {
       return fixture.debugElement.query(By.css('#amount-input'));
     }
 
+    function frequencyInput(): DebugElement {
+      return fixture.debugElement.query(By.css('#frequency-input'));
+    }
+
     function deadlineInput(): DebugElement {
       return fixture.debugElement.query(By.css('#deadline-input'));
     }
@@ -171,6 +188,17 @@ describe('AppComponent', () => {
     function inputText(element: DebugElement, value: string) {
       element.nativeElement.value = value;
       element.nativeElement.dispatchEvent(new Event('input'));
+    }
+
+    async function selectPeriod(period: string) {
+      fixture.debugElement.query(By.css('.period-select .mat-select-trigger')).nativeElement.click();
+      fixture.detectChanges();
+      fixture.debugElement.query(By.css(`mat-option.period[value="${period}"]`)).nativeElement.click();
+      await fixture.whenStable();
+    }
+
+    function selectedPeriod(): string {
+      return fixture.debugElement.query(By.css('.period-select')).nativeElement.innerText.trim();
     }
   });
 

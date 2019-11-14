@@ -37,5 +37,7 @@ export class AppComponent implements OnInit {
     this.newItemLabel = '';
     this.itemAmount = null;
     this.itemDeadline = null;
+    this.itemFrequency = null;
+    this.repeatPeriod = 'days';
   }
 }
