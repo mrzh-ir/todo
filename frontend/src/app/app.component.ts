@@ -10,7 +10,7 @@ import { TodoService } from './todo.service';
 export class AppComponent implements OnInit {
   items: string[] = [];
   newItemLabel = '';
-  itemAmount: number = null;
+  itemAmount: number = 1;
   itemFrequency: number = null;
   itemDeadline: Moment = null;
   repeatPeriod = 'days';
