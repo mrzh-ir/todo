@@ -15,6 +15,8 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { TodoService } from './todo.service';
 
+import { Type, Period } from './item';
+
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
   let items: string[];
@@ -96,17 +98,18 @@ describe('AppComponent', () => {
       expect(addItemInput().nativeElement.value).toEqual('');
     });
 
-    it('clears the amount input once the add button is clicked', async () => {
-      await selectItemType('shopping');
+    it('resets the amount input once the add button is clicked', async () => {
+      await selectItemType(Type.ShoppingItem);
       await inputText(amountInput(), '100');
 
       await addItemToList('An item');
 
-      expect(amountInput().nativeElement.value).toEqual('');
+      await selectItemType(Type.ShoppingItem);
+      expect(amountInput().nativeElement.value).toEqual('1');
     });
 
     it('clears the deadline input once the add button is clicked', async () => {
-      await selectItemType('task');
+      await selectItemType(Type.Task);
       await inputText(deadlineInput(), '01/01/2020');
 
       await addItemToList('An item');
@@ -115,12 +118,13 @@ describe('AppComponent', () => {
     });
 
     it('clears the frequency input once the add button is clicked', async () => {
-      await selectItemType('recurring');
+      await selectItemType(Type.Recurring);
       await inputText(frequencyInput(), '2');
-      await selectPeriod('weeks');
+      await selectPeriod(Period.Week);
 
       await addItemToList('An item');
 
+      await selectItemType(Type.Recurring);
       expect(frequencyInput().nativeElement.value).toEqual('');
       expect(selectedPeriod()).toBe('days');
     });
@@ -148,7 +152,7 @@ describe('AppComponent', () => {
     it('disables the add button for recurring item until frequency is entered', () => {
       inputText(addItemInput(), 'An item');
 
-      selectItemType('recurring');
+      selectItemType(Type.Recurring);
 
       expect(addItemButton().nativeElement.disabled).toBeTruthy();
     });
@@ -161,7 +165,7 @@ describe('AppComponent', () => {
 
     it('enables the add button for recurring item when frequency is entered', () => {
       inputText(addItemInput(), 'An item');
-      selectItemType('recurring');
+      selectItemType(Type.Recurring);
 
       inputText(frequencyInput(), '1');
 
@@ -208,21 +212,10 @@ describe('AppComponent', () => {
       fixture.detectChanges();
     }
 
-    async function selectPeriod(period: string) {
+    async function selectPeriod(period: Period) {
       fixture.debugElement.query(By.css('.period-select .mat-select-trigger')).nativeElement.click();
       fixture.detectChanges();
-      fixture.debugElement.query(By.css(`mat-option.period[value="${period}"]`)).nativeElement.click();
-      await fixture.whenStable();
-    }
-
-    function selectedPeriod(): string {
-      return fixture.debugElement.query(By.css('.period-select')).nativeElement.innerText.trim();
-    }
-
-    async function selectPeriod(period: string) {
-      fixture.debugElement.query(By.css('.period-select .mat-select-trigger')).nativeElement.click();
-      fixture.detectChanges();
-      fixture.debugElement.query(By.css(`mat-option.period[value="${period}"]`)).nativeElement.click();
+      fixture.debugElement.query(By.css(`mat-option.period[ng-reflect-value="${period}"]`)).nativeElement.click();
       await fixture.whenStable();
     }
 
@@ -238,12 +231,12 @@ describe('AppComponent', () => {
     }));
 
     it('displays the amount input when shopping item selected', async () => {
-      await selectItemType('shopping');
+      await selectItemType(Type.ShoppingItem);
 
       expect(amountInputFormElement()).toBeTruthy();
     });
 
-    for (let type of ['task', 'recurring']) {
+    for (let type of [Type.Task, Type.Recurring]) {
       it(`hides the amount input when ${type} selected`, async () => {
         await selectItemType(type);
 
@@ -252,12 +245,12 @@ describe('AppComponent', () => {
     }
 
     it('displays the deadline input when task selected', async () => {
-      await selectItemType('task');
+      await selectItemType(Type.Task);
 
       expect(deadlinePart()).toBeTruthy();
     });
 
-    for (let type of ['recurring', 'shopping']) {
+    for (let type of [Type.Recurring, Type.ShoppingItem]) {
       it(`hides the deadline input when ${type} selected`, async () => {
         await selectItemType(type);
 
@@ -266,12 +259,12 @@ describe('AppComponent', () => {
     }
 
     it('displays the repeat input when recurring selected', async () => {
-      await selectItemType('recurring');
+      await selectItemType(Type.Recurring);
 
       expect(repeatPart()).toBeTruthy();
     });
 
-    for (let type of ['task', 'shopping']) {
+    for (let type of [Type.Task, Type.ShoppingItem]) {
       it(`hides the repeat input when ${type} selected`, async () => {
         await selectItemType(type);
 
@@ -292,10 +285,10 @@ describe('AppComponent', () => {
     }
   });
 
-  async function selectItemType(type: string) {
+  async function selectItemType(type: Type) {
     fixture.debugElement.query(By.css('.new-item-type-select .mat-select-trigger')).nativeElement.click();
     fixture.detectChanges();
-    fixture.debugElement.query(By.css(`mat-option.item-type[value="${type}"]`)).nativeElement.click();
+    fixture.debugElement.query(By.css(`mat-option.item-type[ng-reflect-value="${type}"]`)).nativeElement.click();
     await fixture.whenStable();
   }
 

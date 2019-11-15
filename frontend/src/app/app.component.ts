@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Moment } from 'moment';
 import { TodoService } from './todo.service';
+import { Item, Type, Period } from './item';
 
 @Component({
   selector: 'app-root',
@@ -8,13 +8,11 @@ import { TodoService } from './todo.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+  readonly type = Type;
+  readonly period = Period;
+
   items: string[] = [];
-  newItemLabel = '';
-  itemAmount: number = 1;
-  itemFrequency: number = null;
-  itemDeadline: Moment = null;
-  repeatPeriod = 'days';
-  newItemType = 'task';
+  newItem = Item.emptyItem();
 
   constructor(private todoService: TodoService) {}
 
@@ -28,20 +26,16 @@ export class AppComponent implements OnInit {
   }
 
   get canAdd(): boolean {
-    return !!this.newItemLabel && (this.newItemType !== 'recurring' || !!this.itemFrequency);
+    return !!this.newItem.label && (this.newItem.type !== Type.Recurring || !!this.newItem.frequency);
   }
 
   async addItem() {
-    this.items.push(this.newItemLabel);
-    await this.todoService.addItem(this.newItemLabel);
+    this.items.push(this.newItem.label);
+    await this.todoService.addItem(this.newItem.label);
     this.resetForm();
   }
 
   private resetForm() {
-    this.newItemLabel = '';
-    this.itemAmount = null;
-    this.itemDeadline = null;
-    this.itemFrequency = null;
-    this.repeatPeriod = 'days';
+    this.newItem = Item.emptyItem();
   }
 }

@@ -8,38 +8,38 @@
   <mat-card>
     <mat-card-title>New item</mat-card-title>
     <div>
-      <mat-select [(value)]="newItemType" class="new-item-type-select">
-        <mat-option class="item-type" value="task">One-time task</mat-option>
-        <mat-option class="item-type" value="recurring">Recurring task</mat-option>
-        <mat-option class="item-type" value="shopping">Shopping list item</mat-option>
+      <mat-select [(value)]="newItem.type" class="new-item-type-select">
+        <mat-option class="item-type" [value]="type.Task">One-time task</mat-option>
+        <mat-option class="item-type" [value]="type.Recurring">Recurring task</mat-option>
+        <mat-option class="item-type" [value]="type.ShoppingItem">Shopping list item</mat-option>
       </mat-select>
     </div>
     <div>
-      <mat-form-field class="new-item-form-element amount-input" *ngIf="newItemType == 'shopping'">
-        <input matInput type="number" placeholder="Amount" id="amount-input" [(ngModel)]="itemAmount">
+      <mat-form-field class="new-item-form-element amount-input" *ngIf="newItem.type == type.ShoppingItem">
+        <input matInput type="number" placeholder="Amount" id="amount-input" [(ngModel)]="newItem.amount">
       </mat-form-field>
       <mat-form-field class="new-item-form-element label-input">
-        <input matInput placeholder="New item..." id="label-input" [(ngModel)]="newItemLabel">
+        <input matInput placeholder="New item..." id="label-input" [(ngModel)]="newItem.label">
       </mat-form-field>
     </div>
-    <div class="deadline-part" *ngIf="newItemType == 'task'">
+    <div class="deadline-part" *ngIf="newItem.type == type.Task">
       To be completed by:
       <mat-form-field class="new-item-form-element">
-        <input matInput [matDatepicker]="deadline" placeholder="Deadline" id="deadline-input" [(ngModel)]="itemDeadline">
+        <input matInput [matDatepicker]="deadline" placeholder="Deadline" id="deadline-input" [(ngModel)]="newItem.deadline">
         <mat-datepicker-toggle matSuffix [for]="deadline"></mat-datepicker-toggle>
         <mat-datepicker #deadline></mat-datepicker>
       </mat-form-field>
     </div>
-    <div class="repeat-part" *ngIf="newItemType == 'recurring'">
+    <div class="repeat-part" *ngIf="newItem.type == type.Recurring">
       Repeat every:
       <mat-form-field class="new-item-form-element frequency-input">
-        <input matInput type="number" placeholder="Frequency" id="frequency-input" [(ngModel)]="itemFrequency">
+        <input matInput type="number" placeholder="Frequency" id="frequency-input" [(ngModel)]="newItem.frequency">
       </mat-form-field>
-      <mat-select [(value)]="repeatPeriod" class="period-select">
-        <mat-option class="period" value="days">days</mat-option>
-        <mat-option class="period" value="weeks">weeks</mat-option>
-        <mat-option class="period" value="months">months</mat-option>
-        <mat-option class="period" value="years">years</mat-option>
+      <mat-select [(value)]="newItem.period" class="period-select">
+        <mat-option class="period" [value]="period.Day">days</mat-option>
+        <mat-option class="period" [value]="period.Week">weeks</mat-option>
+        <mat-option class="period" [value]="period.Month">months</mat-option>
+        <mat-option class="period" [value]="period.Year">years</mat-option>
       </mat-select>
       </div>
     <mat-card-footer>
