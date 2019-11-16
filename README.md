@@ -27,7 +27,7 @@ $ ./gradlew bootRun
 On Windows, use
 
 ```shell script
-$ gradle.bat bootRun
+$ gradlew.bat bootRun
 ```
 
 The first time you do this, the application will take a few minutes to build. Once
