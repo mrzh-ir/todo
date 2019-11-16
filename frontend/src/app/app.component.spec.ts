@@ -144,7 +144,7 @@ describe('AppComponent', () => {
 
       fixture = TestBed.createComponent(AppComponent);
       await fixture.whenStable();
-  
+
       expect(itemDeadlines()).toEqual([]);
     });
 
@@ -160,7 +160,7 @@ describe('AppComponent', () => {
 
         fixture = TestBed.createComponent(AppComponent);
         await fixture.whenStable();
-    
+
         expect(itemsIcons()).toEqual([icon]);
       });
     }
@@ -178,7 +178,7 @@ describe('AppComponent', () => {
 
       fixture = TestBed.createComponent(AppComponent);
       await fixture.whenStable();
-  
+
       expect(itemsAmounts()).toEqual(['2']);
     });
 
@@ -188,7 +188,7 @@ describe('AppComponent', () => {
 
         fixture = TestBed.createComponent(AppComponent);
         await fixture.whenStable();
-    
+
         expect(itemsAmounts()).toEqual([]);
       });
     }
@@ -251,7 +251,7 @@ describe('AppComponent', () => {
 
         fixture = TestBed.createComponent(AppComponent);
         await fixture.whenStable();
-    
+
         expect(itemRecurrences()).toEqual([recurrenceExpected]);
       });
     }
@@ -261,7 +261,7 @@ describe('AppComponent', () => {
         items = [itemWithData()];
         fixture = TestBed.createComponent(AppComponent);
         await fixture.whenStable();
-    
+
         expect(itemRecurrences()).toEqual([]);
       });
     }
