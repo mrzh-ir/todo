@@ -15,27 +15,29 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { TodoService } from './todo.service';
 
-import { Type, Period } from './item';
+import { Item, Type, Period } from './item';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
-  let items: string[];
-  let addedItems: string[];
+  let items: Array<Item>;
+  let addedItems: Array<Item>;
   let completedItems: string[];
+  let nextItemId = 100;
 
   class FakeTestingService {
-    async fetchItems(): Promise<string[]> {
+    async fetchItems(): Promise<Array<Item>> {
       return Promise.resolve(items);
     }
 
-    async addItem(item: string): Promise<void> {
+    async addItem(item: Item): Promise<Array<Item>> {
+      const newItem = {...item, id: String(nextItemId)};
       addedItems.push(item);
-      return Promise.resolve();
+      return Promise.resolve([...items, newItem]);
     }
 
-    async completeItem(item: string): Promise<void> {
-      completedItems.push(item);
-      return Promise.resolve();
+    async completeItem(itemId: string): Promise<Array<Item>> {
+      completedItems.push(itemId);
+      return Promise.resolve(items.filter((item) => item.id !== itemId));
     }
   }
 
@@ -66,12 +68,34 @@ describe('AppComponent', () => {
     }).compileComponents();
   }));
 
-  it('loads items from the backend', async () => {
-    items = ['An item'];
-    fixture = TestBed.createComponent(AppComponent);
-    await fixture.whenStable();
+  describe('With items loaded from the backend', () => {
+    it('loads items from the backend', async () => {
+      items = [itemWithData('An item')];
+      fixture = TestBed.createComponent(AppComponent);
+      await fixture.whenStable();
+  
+      expect(itemsList()).toContain('An item');
+    });
 
-    expect(itemsList()).toContain('An item');
+    it('removes an item from the list', async () => {
+      items = [itemWithData('An item', '100')];
+      fixture = TestBed.createComponent(AppComponent);
+      await fixture.whenStable();
+
+      await removeItemFromList(0);
+
+      expect(itemsList()).not.toContain('An item');
+    });
+
+    it('completes an item on the backend', async () => {
+      items = [itemWithData('An item', '100')];
+      fixture = TestBed.createComponent(AppComponent);
+      await fixture.whenStable();
+
+      await removeItemFromList(0);
+
+      expect(completedItems).toContain('100');
+    });
   });
 
   describe('Adding and removing items', () => {
@@ -89,7 +113,7 @@ describe('AppComponent', () => {
     it('adds an item on the backend', async () => {
       await addItemToList('An item');
 
-      expect(addedItems).toContain('An item');
+      expect(addedItems).toContain(jasmine.objectContaining({label: 'An item'}));
     });
 
     it('clears the label input once the add button is clicked', async () => {
@@ -129,22 +153,6 @@ describe('AppComponent', () => {
       expect(selectedPeriod()).toBe('days');
     });
 
-    it('removes an item from the list', async () => {
-      await addItemToList('An item');
-
-      await removeItemFromList(0);
-
-      expect(itemsList()).not.toContain('An item');
-    });
-
-    it('completes an item on the backend', async () => {
-      await addItemToList('An item');
-
-      await removeItemFromList(0);
-
-      expect(completedItems).toContain('An item');
-    });
-
     it('disables the add button until label is entered', () => {
       expect(addItemButton().nativeElement.disabled).toBeTruthy();
     });
@@ -175,14 +183,6 @@ describe('AppComponent', () => {
     async function addItemToList(item: string) {
       inputText(addItemInput(), item);
       addItemButton().nativeElement.click();
-      await fixture.whenStable();
-    }
-
-    async function removeItemFromList(index: number) {
-      fixture.debugElement
-          .query(By.css(`#todo-list mat-list-option:nth-of-type(${index + 1}) mat-pseudo-checkbox`))
-          .nativeElement
-          .click();
       await fixture.whenStable();
     }
 
@@ -285,6 +285,14 @@ describe('AppComponent', () => {
     }
   });
 
+  async function removeItemFromList(index: number) {
+    fixture.debugElement
+        .query(By.css(`#todo-list mat-list-option:nth-of-type(${index + 1}) mat-pseudo-checkbox`))
+        .nativeElement
+        .click();
+    await fixture.whenStable();
+  }
+
   async function selectItemType(type: Type) {
     fixture.debugElement.query(By.css('.new-item-type-select .mat-select-trigger')).nativeElement.click();
     fixture.detectChanges();
@@ -296,5 +304,12 @@ describe('AppComponent', () => {
     return fixture.debugElement
         .queryAll(By.css('#todo-list mat-list-option'))
         .map((item) => item.nativeElement.innerText);
+  }
+
+  function itemWithData(label: string = 'An item', id: string = '100'): Item {
+    const item = Item.emptyItem();
+    item.id = id;
+    item.label = label;
+    return item;
   }
 });

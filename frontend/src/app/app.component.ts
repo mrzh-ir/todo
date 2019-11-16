@@ -11,7 +11,7 @@ export class AppComponent implements OnInit {
   readonly type = Type;
   readonly period = Period;
 
-  items: string[] = [];
+  items: Array<Item> = [];
   newItem = Item.emptyItem();
 
   constructor(private todoService: TodoService) {}
@@ -20,9 +20,9 @@ export class AppComponent implements OnInit {
     this.items = await this.todoService.fetchItems();
   }
 
-  async listItemSelected(itemToBeRemoved: string) {
-    this.items = this.items.filter((item) => item !== itemToBeRemoved);
-    await this.todoService.completeItem(itemToBeRemoved);
+  async listItemSelected(itemIdToBeRemoved: string) {
+    this.items = this.items.filter((item) => item.id !== itemIdToBeRemoved);
+    await this.todoService.completeItem(itemIdToBeRemoved);
   }
 
   get canAdd(): boolean {
@@ -30,8 +30,8 @@ export class AppComponent implements OnInit {
   }
 
   async addItem() {
-    this.items.push(this.newItem.label);
-    await this.todoService.addItem(this.newItem.label);
+    this.items.push(this.newItem);
+    await this.todoService.addItem(this.newItem);
     this.resetForm();
   }
 

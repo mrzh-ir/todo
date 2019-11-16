@@ -2,7 +2,7 @@
   <h1>Todo list</h1>
 
   <mat-selection-list id="todo-list" (selectionChange)="listItemSelected($event.option.value)">
-    <mat-list-option *ngFor="let item of items" value="{{item}}">{{item}}</mat-list-option>
+    <mat-list-option *ngFor="let item of items" value="{{item.id}}">{{item.label}}</mat-list-option>
   </mat-selection-list>
 
   <mat-card>
