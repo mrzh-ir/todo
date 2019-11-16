@@ -96,6 +96,18 @@ describe('AppComponent', () => {
 
       expect(completedItems).toContain('100');
     });
+
+    it('updates the list of items with the server response after completing an item', async () => {
+      items = [itemWithData('An item', '100')];
+      fixture = TestBed.createComponent(AppComponent);
+      await fixture.whenStable();
+      items = [itemWithData('Another item', '101')];
+
+      await removeItemFromList(0);
+      await fixture.whenStable();
+
+      expect(itemsList()).toContain('Another item');
+    });
   });
 
   describe('Adding and removing items', () => {
@@ -114,6 +126,15 @@ describe('AppComponent', () => {
       await addItemToList('An item');
 
       expect(addedItems).toContain(jasmine.objectContaining({label: 'An item'}));
+    });
+
+    it('updates the list of items with the server response after adding an item', async () => {
+      items = [itemWithData('An item'), itemWithData('Another item')];
+
+      await addItemToList('An item');
+      await fixture.whenStable();
+
+      expect(itemsList()).toContain('Another item');
     });
 
     it('clears the label input once the add button is clicked', async () => {
