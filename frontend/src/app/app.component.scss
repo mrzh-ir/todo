@@ -5,6 +5,26 @@
     padding: 8px;
 }
 
+.type-icon {
+    vertical-align: text-top;
+}
+
+.item-description .amount {
+    display: inline-block;
+    min-width: 32px;
+    position: relative;
+    text-align: right;
+}
+
+.item-deadline,.item-recurrence {
+    color: darkgrey;
+    font-size: small;
+}
+
+.item-subtext {
+    padding-left: 28px;
+}
+
 .new-item-type-select {
     width: 200px;
     margin-top: 8px;

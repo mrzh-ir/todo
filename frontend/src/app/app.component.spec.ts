@@ -5,17 +5,18 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import * as moment from 'moment';
 
 import { AppComponent } from './app.component';
-import { TodoService } from './todo.service';
-
 import { Item, Type, Period } from './item';
+import { TodoService } from './todo.service';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -55,6 +56,7 @@ describe('AppComponent', () => {
         MatCardModule,
         MatDatepickerModule,
         MatFormFieldModule,
+        MatIconModule,
         MatInputModule,
         MatListModule,
         MatMomentDateModule,
@@ -71,6 +73,7 @@ describe('AppComponent', () => {
   describe('With items loaded from the backend', () => {
     it('loads items from the backend', async () => {
       items = [itemWithData('An item')];
+
       fixture = TestBed.createComponent(AppComponent);
       await fixture.whenStable();
   
@@ -100,6 +103,7 @@ describe('AppComponent', () => {
     it('updates the list of items with the server response after completing an item', async () => {
       items = [itemWithData('An item', '100')];
       fixture = TestBed.createComponent(AppComponent);
+
       await fixture.whenStable();
       items = [itemWithData('Another item', '101')];
 
@@ -108,6 +112,165 @@ describe('AppComponent', () => {
 
       expect(itemsList()).toContain('Another item');
     });
+
+    const typeCases: Array<{type: Type, icon: string}> = [
+      {
+        type: Type.Task,
+        icon: 'assignment',
+      },
+      {
+        type: Type.Recurring,
+        icon: 'update',
+      },
+      {
+        type: Type.ShoppingItem,
+        icon: 'shopping_cart',
+      },
+    ];
+
+    it('displays a deadline if present', async () => {
+      const item = itemWithData();
+      item.deadline = moment('2020-03-15');
+      items = [item];
+
+      fixture = TestBed.createComponent(AppComponent);
+      await fixture.whenStable();
+
+      expect(itemDeadlines()).toEqual(['Complete by: 15/03/2020']);
+    });
+
+    it('hides the deadline if not present', async () => {
+      items = [itemWithData()];
+
+      fixture = TestBed.createComponent(AppComponent);
+      await fixture.whenStable();
+  
+      expect(itemDeadlines()).toEqual([]);
+    });
+
+    function itemDeadlines(): string[] {
+      return fixture.debugElement
+          .queryAll(By.css('#todo-list mat-list-item .item-deadline'))
+          .map((item) => item.nativeElement.innerText);
+    }
+
+    for (const {type, icon} of typeCases) {
+      it(`displays the icon for type ${type}`, async () => {
+        items = [itemWithData('An item', '100', type)];
+
+        fixture = TestBed.createComponent(AppComponent);
+        await fixture.whenStable();
+    
+        expect(itemsIcons()).toEqual([icon]);
+      });
+    }
+
+    function itemsIcons(): string[] {
+      return fixture.debugElement
+          .queryAll(By.css('#todo-list mat-list-item .type-icon'))
+          .map((item) => item.nativeElement.innerText);
+    }
+
+    it('displays the amount of a shopping item', async () => {
+      const item = itemWithData('An item', '100', Type.ShoppingItem);
+      item.amount = 2;
+      items = [item];
+
+      fixture = TestBed.createComponent(AppComponent);
+      await fixture.whenStable();
+  
+      expect(itemsAmounts()).toEqual(['2']);
+    });
+
+    for (const type of [Type.Task, Type.Recurring]) {
+      it(`hides the amount when type is ${type}`, async () => {
+        items = [itemWithData('An item', '100', type)];
+
+        fixture = TestBed.createComponent(AppComponent);
+        await fixture.whenStable();
+    
+        expect(itemsAmounts()).toEqual([]);
+      });
+    }
+
+    function itemsAmounts(): string[] {
+      return fixture.debugElement
+          .queryAll(By.css('#todo-list mat-list-item .amount'))
+          .map((item) => item.nativeElement.innerText);
+    }
+
+    const recurrenceCases: Array<{period: Period, frequency: number, recurrenceExpected: string}> = [
+      {
+        period: Period.Day,
+        frequency: 1,
+        recurrenceExpected: 'Repeats every day',
+      },
+      {
+        period: Period.Week,
+        frequency: 1,
+        recurrenceExpected: 'Repeats every week',
+      },
+      {
+        period: Period.Month,
+        frequency: 1,
+        recurrenceExpected: 'Repeats every month',
+      },
+      {
+        period: Period.Year,
+        frequency: 1,
+        recurrenceExpected: 'Repeats every year',
+      },
+      {
+        period: Period.Day,
+        frequency: 2,
+        recurrenceExpected: 'Repeats every 2 days',
+      },
+      {
+        period: Period.Week,
+        frequency: 2,
+        recurrenceExpected: 'Repeats every 2 weeks',
+      },
+      {
+        period: Period.Month,
+        frequency: 2,
+        recurrenceExpected: 'Repeats every 2 months',
+      },
+      {
+        period: Period.Year,
+        frequency: 2,
+        recurrenceExpected: 'Repeats every 2 years',
+      },
+    ];
+
+    for (const {period, frequency, recurrenceExpected} of recurrenceCases) {
+      it(`displays the recurrence ${recurrenceExpected} for period ${period} and frequency ${frequency}`, async () => {
+        const item = itemWithData('An item', '100', Type.Recurring);
+        item.period = period;
+        item.frequency = frequency;
+        items = [item];
+
+        fixture = TestBed.createComponent(AppComponent);
+        await fixture.whenStable();
+    
+        expect(itemRecurrences()).toEqual([recurrenceExpected]);
+      });
+    }
+
+    for (const type of [Type.Task, Type.ShoppingItem]) {
+      it(`hides the recurrence if the type is ${type}`, async () => {
+        items = [itemWithData()];
+        fixture = TestBed.createComponent(AppComponent);
+        await fixture.whenStable();
+    
+        expect(itemRecurrences()).toEqual([]);
+      });
+    }
+
+    function itemRecurrences(): string[] {
+      return fixture.debugElement
+          .queryAll(By.css('#todo-list mat-list-item .item-recurrence'))
+          .map((item) => item.nativeElement.innerText);
+    }
   });
 
   describe('Adding and removing items', () => {
@@ -257,7 +420,7 @@ describe('AppComponent', () => {
       expect(amountInputFormElement()).toBeTruthy();
     });
 
-    for (let type of [Type.Task, Type.Recurring]) {
+    for (const type of [Type.Task, Type.Recurring]) {
       it(`hides the amount input when ${type} selected`, async () => {
         await selectItemType(type);
 
@@ -271,7 +434,7 @@ describe('AppComponent', () => {
       expect(deadlinePart()).toBeTruthy();
     });
 
-    for (let type of [Type.Recurring, Type.ShoppingItem]) {
+    for (const type of [Type.Recurring, Type.ShoppingItem]) {
       it(`hides the deadline input when ${type} selected`, async () => {
         await selectItemType(type);
 
@@ -285,7 +448,7 @@ describe('AppComponent', () => {
       expect(repeatPart()).toBeTruthy();
     });
 
-    for (let type of [Type.Task, Type.ShoppingItem]) {
+    for (const type of [Type.Task, Type.ShoppingItem]) {
       it(`hides the repeat input when ${type} selected`, async () => {
         await selectItemType(type);
 
@@ -308,7 +471,7 @@ describe('AppComponent', () => {
 
   async function removeItemFromList(index: number) {
     fixture.debugElement
-        .query(By.css(`#todo-list mat-list-option:nth-of-type(${index + 1}) mat-pseudo-checkbox`))
+        .query(By.css(`#todo-list mat-list-item:nth-of-type(${index + 1}) .complete-button`))
         .nativeElement
         .click();
     await fixture.whenStable();
@@ -323,14 +486,15 @@ describe('AppComponent', () => {
 
   function itemsList(): string[] {
     return fixture.debugElement
-        .queryAll(By.css('#todo-list mat-list-option'))
+        .queryAll(By.css('#todo-list mat-list-item .item-label'))
         .map((item) => item.nativeElement.innerText);
   }
 
-  function itemWithData(label: string = 'An item', id: string = '100'): Item {
+  function itemWithData(label: string = 'An item', id: string = '100', type: Type = Type.Task): Item {
     const item = Item.emptyItem();
     item.id = id;
     item.label = label;
+    item.type = type;
     return item;
   }
 });

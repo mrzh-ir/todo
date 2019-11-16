@@ -38,4 +38,30 @@ export class AppComponent implements OnInit {
   private resetForm() {
     this.newItem = Item.emptyItem();
   }
+
+  itemRecurrenceAsString(item: Item): string {
+    if (item.frequency == 1) {
+      switch (item.period) {
+        case Period.Day:
+          return 'day';
+        case Period.Week:
+          return 'week';
+        case Period.Month:
+          return 'month';
+        case Period.Year:
+          return 'year';
+      }
+    } else {
+      switch (item.period) {
+        case Period.Day:
+          return `${item.frequency} days`;
+        case Period.Week:
+          return `${item.frequency} weeks`;
+        case Period.Month:
+          return `${item.frequency} months`;
+        case Period.Year:
+          return `${item.frequency} years`;
+      }
+    }
+  }
 }

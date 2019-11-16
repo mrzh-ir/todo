@@ -1,9 +1,28 @@
 <div class="content-area">
   <h1>Todo list</h1>
 
-  <mat-selection-list id="todo-list" (selectionChange)="listItemSelected($event.option.value)">
-    <mat-list-option *ngFor="let item of items" value="{{item.id}}">{{item.label}}</mat-list-option>
-  </mat-selection-list>
+  <mat-list id="todo-list">
+    <mat-list-item *ngFor="let item of items">
+      <button mat-button class="complete-button" (click)="listItemSelected(item.id)">
+        <mat-icon>close</mat-icon>
+      </button>
+      <p matLine class="item-description">
+        <span [ngSwitch]="item.type">
+          <mat-icon *ngSwitchCase="type.Task" class="type-icon">assignment</mat-icon>
+          <mat-icon *ngSwitchCase="type.Recurring" class="type-icon">update</mat-icon>
+          <mat-icon *ngSwitchCase="type.ShoppingItem" class="type-icon">shopping_cart</mat-icon>
+        </span>
+        <span *ngIf="item.type == type.ShoppingItem" [class]="'amount'">{{item.amount}}</span>
+        <span class="item-label">{{item.label}}</span>
+      </p>
+      <p matLine class="item-deadline" *ngIf="!!item.deadline">
+        <span class="item-subtext">Complete by: {{item.deadline.format("DD/MM/YYYY")}}</span>
+      </p>
+      <p matLine class="item-recurrence" *ngIf="item.type == type.Recurring">
+        <span class="item-subtext">Repeats every {{itemRecurrenceAsString(item)}}</span>
+      </p>
+    </mat-list-item>
+  </mat-list>
 
   <mat-card>
     <mat-card-title>New item</mat-card-title>
