@@ -94,7 +94,7 @@ class ItemDto {
     result.amount = dto.amount;
     result.frequency = dto.frequency;
     result.period = ItemDto.toPeriod(dto.period);
-    result.deadline = moment(dto.deadline);
+    result.deadline = dto.deadline && moment(dto.deadline);
     return result;
   }
 

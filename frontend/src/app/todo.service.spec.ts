@@ -86,6 +86,10 @@ describe('TodoService', () => {
       dto: {period: 'invalid'},
       item: {period: undefined},
     },
+    {
+      dto: {deadline: null},
+      item: {deadline: null},
+    },
   ];
 
   for (let {dto, item} of toItemCases) {
