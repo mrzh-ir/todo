@@ -74,6 +74,7 @@ final class TodoServiceController {
       ItemDto itemDto = new ItemDto();
       itemDto.label = label;
       itemDto.id = String.valueOf(nextId++);
+      itemDto.type = "TASK";
       return itemDto;
     }
 
