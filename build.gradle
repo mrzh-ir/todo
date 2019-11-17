@@ -15,6 +15,9 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation(project(':frontend'))
+	testCompile 'org.assertj:assertj-core:3.14.0'
+	testCompile 'org.mockito:mockito-core:3.1.0'
+	testCompile 'org.mockito:mockito-junit-jupiter:3.1.0'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}

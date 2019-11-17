@@ -1,7 +1,14 @@
 package org.redischool.sd2.todo.api;
 
+import org.redischool.sd2.todo.domain.TodoListService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -9,18 +16,61 @@ final class TodoServiceController {
   private static final List<ItemDto> ITEMS =
       List.of(ItemDto.withLabel("Butter"), ItemDto.withLabel("Sugar"), ItemDto.withLabel("Flour"));
 
+  private final TodoListService todoListService;
+
+  TodoServiceController(@Autowired TodoListService todoListService) {
+    this.todoListService = todoListService;
+  }
+
   @GetMapping("/api/items")
   FetchItemsResponseDto fetchItems() {
     return new FetchItemsResponseDto(ITEMS);
   }
 
   @PostMapping("/api/items")
-  AddItemResponseDto addItem(AddItemDto addItemDto) {
+  AddItemResponseDto addItem(@RequestBody AddItemRequestDto addItemDto) {
+    switch (addItemDto.type) {
+      case "TASK":
+        if (addItemDto.deadline != null && !addItemDto.deadline.isEmpty()) {
+          todoListService.addTaskWithDeadline(
+              addItemDto.label, LocalDate.parse(addItemDto.deadline, DateTimeFormatter.ISO_DATE));
+        } else {
+          todoListService.addTask(addItemDto.label);
+        }
+        break;
+      case "RECURRING":
+        todoListService.addRecurringTask(
+            addItemDto.label, toPeriod(addItemDto.frequency, addItemDto.period));
+        break;
+      case "SHOPPING_ITEM":
+        todoListService.addShoppingItem(addItemDto.label, addItemDto.amount);
+        break;
+      default:
+        throw new HttpClientErrorException(
+            HttpStatus.BAD_REQUEST, String.format("Unknown type %s", addItemDto.type));
+    }
     return new AddItemResponseDto(ITEMS);
+  }
+
+  private Period toPeriod(int frequency, String unit) {
+    switch (unit) {
+      case "DAY":
+        return Period.ofDays(frequency);
+      case "WEEK":
+        return Period.ofWeeks(frequency);
+      case "MONTH":
+        return Period.ofMonths(frequency);
+      case "YEAR":
+        return Period.ofYears(frequency);
+      default:
+        throw new HttpClientErrorException(
+            HttpStatus.BAD_REQUEST, String.format("Unknown period unit %s", unit));
+    }
   }
 
   @DeleteMapping("/api/items/{id}")
   DeleteItemResponseDto deleteItem(@PathVariable("id") String id) {
+    todoListService.markCompleted(id);
     return new DeleteItemResponseDto(ITEMS);
   }
 
@@ -107,7 +157,7 @@ final class TodoServiceController {
     }
   }
 
-  private static final class AddItemDto {
+  private static final class AddItemRequestDto {
     String label;
     String type;
     Integer amount;
