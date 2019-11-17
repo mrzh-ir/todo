@@ -1,8 +1,11 @@
 package org.redischool.sd2.todo.domain;
 
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.time.Period;
 
+@Service
 final class ConcreteTodoListService implements TodoListService {
   @Override
   public void addTask(String label) {
