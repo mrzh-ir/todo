@@ -9,6 +9,8 @@ node {
   download = true
 }
 
+sourceCompatibility = '11'
+
 jar.dependsOn 'npm_run_build'
 
 jar {
