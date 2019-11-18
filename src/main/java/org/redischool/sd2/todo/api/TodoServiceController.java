@@ -14,7 +14,11 @@ import java.util.List;
 @RestController
 final class TodoServiceController {
   private static final List<ItemDto> ITEMS =
-      List.of(ItemDto.withLabel("Butter"), ItemDto.withLabel("Sugar"), ItemDto.withLabel("Flour"));
+      List.of(
+          ItemDto.oneTimeTaskWithLabel("Learn German"),
+          ItemDto.oneTimeTaskWithLabelAndDeadline("Do mid-semester project for ReDI", "2019-12-31"),
+          ItemDto.recurringTaskWithLabel("Do ReDI homework"),
+          ItemDto.shoppingItemWithLabel("Müesli"));
 
   private final TodoListService todoListService;
 
@@ -120,11 +124,39 @@ final class TodoServiceController {
     String period;
     String deadline;
 
-    static ItemDto withLabel(String label) {
+    static ItemDto oneTimeTaskWithLabel(String label) {
       ItemDto itemDto = new ItemDto();
       itemDto.label = label;
       itemDto.id = String.valueOf(nextId++);
       itemDto.type = "TASK";
+      return itemDto;
+    }
+
+    static ItemDto oneTimeTaskWithLabelAndDeadline(String label, String deadline) {
+      ItemDto itemDto = new ItemDto();
+      itemDto.label = label;
+      itemDto.deadline = deadline;
+      itemDto.id = String.valueOf(nextId++);
+      itemDto.type = "TASK";
+      return itemDto;
+    }
+
+    static ItemDto recurringTaskWithLabel(String label) {
+      ItemDto itemDto = new ItemDto();
+      itemDto.label = label;
+      itemDto.frequency = 1;
+      itemDto.period = "WEEK";
+      itemDto.id = String.valueOf(nextId++);
+      itemDto.type = "RECURRING";
+      return itemDto;
+    }
+
+    static ItemDto shoppingItemWithLabel(String label) {
+      ItemDto itemDto = new ItemDto();
+      itemDto.label = label;
+      itemDto.amount = 1;
+      itemDto.id = String.valueOf(nextId++);
+      itemDto.type = "SHOPPING_ITEM";
       return itemDto;
     }
 
