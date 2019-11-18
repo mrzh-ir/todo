@@ -151,7 +151,8 @@ describe('TodoService', () => {
       const result = await resultPromise;
 
       expect(fakeSnackBar.open)
-          .toHaveBeenCalledWith(jasmine.stringMatching(/Cannot fetch items: .*400 Bad Request/));
+          .toHaveBeenCalledWith(
+              jasmine.stringMatching(/Cannot fetch items: .*400 Bad Request/), 'Dismiss');
       expect(result).toEqual([]);
     });
 
@@ -163,7 +164,8 @@ describe('TodoService', () => {
       await expectAsync(resultPromise).toBeRejected();
 
       expect(fakeSnackBar.open)
-          .toHaveBeenCalledWith(jasmine.stringMatching(/Cannot add item 'An item': .*400 Bad Request/));
+          .toHaveBeenCalledWith(
+              jasmine.stringMatching(/Cannot add item 'An item': .*400 Bad Request/), 'Dismiss');
     });
 
     it('should display error to snackbar when completing an item', async () => {
@@ -174,7 +176,8 @@ describe('TodoService', () => {
       await expectAsync(resultPromise).toBeRejected();
 
       expect(fakeSnackBar.open)
-          .toHaveBeenCalledWith(jasmine.stringMatching(/Cannot mark item 100 completed: .*400 Bad Request/));
+          .toHaveBeenCalledWith(
+              jasmine.stringMatching(/Cannot mark item 100 completed: .*400 Bad Request/), 'Dismiss');
     });
   });
 });

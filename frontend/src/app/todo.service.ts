@@ -16,7 +16,7 @@ export class TodoService {
         .toPromise()
         .then((response) => response.items.map((itemDto) => ItemDto.toItem(itemDto)))
         .catch((error: HttpErrorResponse) => {
-          this.snackBar.open(`Cannot fetch items: ${error.message}`);
+          this.snackBar.open(`Cannot fetch items: ${error.message}`, 'Dismiss');
           return [];
         });
   }
@@ -26,7 +26,7 @@ export class TodoService {
         .toPromise()
         .then(response => response.items.map((itemDto) => ItemDto.toItem(itemDto)))
         .catch((error: HttpErrorResponse) => {
-          this.snackBar.open(`Cannot add item '${item.label}': ${error.message}`);
+          this.snackBar.open(`Cannot add item '${item.label}': ${error.message}`, 'Dismiss');
           throw error;
         });
   }
@@ -36,7 +36,7 @@ export class TodoService {
         .toPromise()
         .then(response => response.items.map((itemDto) => ItemDto.toItem(itemDto)))
         .catch((error: HttpErrorResponse) => {
-          this.snackBar.open(`Cannot mark item ${itemId} completed: ${error.message}`);
+          this.snackBar.open(`Cannot mark item ${itemId} completed: ${error.message}`, 'Dismiss');
           throw error;
         });
   }
