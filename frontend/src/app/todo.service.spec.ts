@@ -1,5 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import * as moment from 'moment';
 
 import { Type, Period, Item } from './item';
@@ -8,10 +9,15 @@ import { TodoService } from './todo.service';
 describe('TodoService', () => {
   let subject: TodoService;
   let httpMock: HttpTestingController;
+  let fakeSnackBar: MatSnackBar;
 
   beforeEach(() => {
+    fakeSnackBar = jasmine.createSpyObj(['open']);
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
+      providers: [
+        { provide: MatSnackBar, useValue: fakeSnackBar }
+      ],
     });
     subject = TestBed.get(TodoService);
     httpMock = TestBed.get(HttpTestingController);
@@ -134,5 +140,41 @@ describe('TodoService', () => {
     const request = httpMock.expectOne('/api/items/100');
     request.flush({items: [{id: '200'}]});
     expect(await resultPromise).toContain(jasmine.objectContaining({id: '200'}));
+  });
+
+  describe('Error conditions', () => {
+    it('should display error to snackbar when fetching items', async () => {
+      const resultPromise = subject.fetchItems();
+      const request = httpMock.expectOne('/api/items');
+      request.flush('An error', {status: 400, statusText: 'Bad Request'});
+
+      const result = await resultPromise;
+
+      expect(fakeSnackBar.open)
+          .toHaveBeenCalledWith(jasmine.stringMatching(/Cannot fetch items: .*400 Bad Request/));
+      expect(result).toEqual([]);
+    });
+
+    it('should display error to snackbar when adding an item', async () => {
+      const resultPromise = subject.addItem({label: 'An item'} as Item);
+      const request = httpMock.expectOne('/api/items');
+      request.flush('An error', {status: 400, statusText: 'Bad Request'});
+
+      await expectAsync(resultPromise).toBeRejected();
+
+      expect(fakeSnackBar.open)
+          .toHaveBeenCalledWith(jasmine.stringMatching(/Cannot add item 'An item': .*400 Bad Request/));
+    });
+
+    it('should display error to snackbar when completing an item', async () => {
+      const resultPromise = subject.completeItem('100');
+      const request = httpMock.expectOne('/api/items/100');
+      request.flush('An error', {status: 400, statusText: 'Bad Request'});
+
+      await expectAsync(resultPromise).toBeRejected();
+
+      expect(fakeSnackBar.open)
+          .toHaveBeenCalledWith(jasmine.stringMatching(/Cannot mark item 100 completed: .*400 Bad Request/));
+    });
   });
 });

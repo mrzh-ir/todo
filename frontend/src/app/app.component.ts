@@ -22,7 +22,9 @@ export class AppComponent implements OnInit {
 
   async listItemSelected(itemIdToBeRemoved: string) {
     this.items = this.items.filter((item) => item.id !== itemIdToBeRemoved);
-    this.items = await this.todoService.completeItem(itemIdToBeRemoved);
+    try {
+      this.items = await this.todoService.completeItem(itemIdToBeRemoved);
+    } catch (ignored) {}
   }
 
   get canAdd(): boolean {
@@ -31,7 +33,9 @@ export class AppComponent implements OnInit {
 
   async addItem() {
     this.items.push(this.newItem);
-    this.items = await this.todoService.addItem(this.newItem);
+    try {
+      this.items = await this.todoService.addItem(this.newItem);
+    } catch (ignored) {}
     this.resetForm();
   }
 

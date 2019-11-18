@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import * as moment from 'moment';
 
 import { Item, Type, Period } from './item';
@@ -8,24 +9,36 @@ import { Item, Type, Period } from './item';
   providedIn: 'root'
 })
 export class TodoService {
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient, private snackBar: MatSnackBar) {}
 
   async fetchItems(): Promise<Array<Item>> {
     return this.httpClient.get<FetchItemsResponse>('/api/items')
         .toPromise()
-        .then((response) => response.items.map((itemDto) => ItemDto.toItem(itemDto)));
+        .then((response) => response.items.map((itemDto) => ItemDto.toItem(itemDto)))
+        .catch((error: HttpErrorResponse) => {
+          this.snackBar.open(`Cannot fetch items: ${error.message}`);
+          return [];
+        });
   }
 
   async addItem(item: Item): Promise<Array<Item>> {
     return this.httpClient.post<AddItemResponse>('/api/items', ItemDto.fromItem(item))
         .toPromise()
-        .then(response => response.items.map((itemDto) => ItemDto.toItem(itemDto)));
+        .then(response => response.items.map((itemDto) => ItemDto.toItem(itemDto)))
+        .catch((error: HttpErrorResponse) => {
+          this.snackBar.open(`Cannot add item '${item.label}': ${error.message}`);
+          throw error;
+        });
   }
 
   async completeItem(itemId: string): Promise<Array<Item>> {
     return this.httpClient.delete<CompleteItemResponse>(`/api/items/${itemId}`)
         .toPromise()
-        .then(response => response.items.map((itemDto) => ItemDto.toItem(itemDto)));
+        .then(response => response.items.map((itemDto) => ItemDto.toItem(itemDto)))
+        .catch((error: HttpErrorResponse) => {
+          this.snackBar.open(`Cannot mark item ${itemId} completed: ${error.message}`);
+          throw error;
+        });
   }
 }
 
