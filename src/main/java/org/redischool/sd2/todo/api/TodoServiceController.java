@@ -71,6 +71,11 @@ final class TodoServiceController {
     return new DeleteItemResponseDto(currentItems());
   }
 
+  @PutMapping("/api/items:updateRecurring")
+  void updateRecurringTasks() {
+    todoListService.updateRecurringTasks();
+  }
+
   private List<ItemDto> currentItems() {
     return List.of(
         ItemDto.oneTimeTaskWithLabel("Learn German"),

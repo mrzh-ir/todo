@@ -102,6 +102,13 @@ class TodoServiceControllerTest {
     verify(todoListService).markCompleted("100");
   }
 
+  @Test
+  void shouldUpdateRecurringTasks() {
+    restTemplate.put("/api/items:updateRecurring", "");
+
+    verify(todoListService).updateRecurringTasks();
+  }
+
   private HttpEntity<String> httpEntity(String payload) {
     return new HttpEntity<>(payload, httpHeaders);
   }

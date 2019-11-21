@@ -14,4 +14,6 @@ public interface TodoListService {
   void addShoppingItem(String label, int amount);
 
   void markCompleted(String itemId);
+
+  void updateRecurringTasks();
 }

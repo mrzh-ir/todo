@@ -31,4 +31,9 @@ final class ConcreteTodoListService implements TodoListService {
   public void markCompleted(String itemId) {
     throw new UnsupportedOperationException("Not implemented yet");
   }
+
+  @Override
+  public void updateRecurringTasks() {
+    throw new UnsupportedOperationException("Not implemented yet");
+  }
 }
