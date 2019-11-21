@@ -13,13 +13,6 @@ import java.util.List;
 
 @RestController
 final class TodoServiceController {
-  private static final List<ItemDto> ITEMS =
-      List.of(
-          ItemDto.oneTimeTaskWithLabel("Learn German"),
-          ItemDto.oneTimeTaskWithLabelAndDeadline("Do mid-semester project for ReDI", "2019-12-31"),
-          ItemDto.recurringTaskWithLabel("Do ReDI homework"),
-          ItemDto.shoppingItemWithLabel("Müesli"));
-
   private final TodoListService todoListService;
 
   TodoServiceController(@Autowired TodoListService todoListService) {
@@ -28,7 +21,7 @@ final class TodoServiceController {
 
   @GetMapping("/api/items")
   FetchItemsResponseDto fetchItems() {
-    return new FetchItemsResponseDto(ITEMS);
+    return new FetchItemsResponseDto(currentItems());
   }
 
   @PostMapping("/api/items")
@@ -53,7 +46,7 @@ final class TodoServiceController {
         throw new HttpClientErrorException(
             HttpStatus.BAD_REQUEST, String.format("Unknown type %s", addItemDto.type));
     }
-    return new AddItemResponseDto(ITEMS);
+    return new AddItemResponseDto(currentItems());
   }
 
   private Period toPeriod(int frequency, String unit) {
@@ -75,7 +68,15 @@ final class TodoServiceController {
   @DeleteMapping("/api/items/{id}")
   DeleteItemResponseDto deleteItem(@PathVariable("id") String id) {
     todoListService.markCompleted(id);
-    return new DeleteItemResponseDto(ITEMS);
+    return new DeleteItemResponseDto(currentItems());
+  }
+
+  private List<ItemDto> currentItems() {
+    return List.of(
+        ItemDto.oneTimeTaskWithLabel("Learn German"),
+        ItemDto.oneTimeTaskWithLabelAndDeadline("Do mid-semester project for ReDI", "2019-12-31"),
+        ItemDto.recurringTaskWithLabel("Do ReDI homework"),
+        ItemDto.shoppingItemWithLabel("Müesli"));
   }
 
   private static final class FetchItemsResponseDto {
