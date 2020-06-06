@@ -1,78 +1,63 @@
 package org.redischool.sd2.todo.api;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.redischool.sd2.todo.domain.TodoListService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
-@ExtendWith(MockitoExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@WebMvcTest(TodoServiceController.class)
 class TodoServiceControllerTest {
   @Autowired
-  private TestRestTemplate restTemplate;
+  private MockMvc mockMvc;
 
   @MockBean
   private TodoListService todoListService;
 
-  private final HttpHeaders httpHeaders = new HttpHeaders();
-
-  @BeforeEach
-  void setup() {
-    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-  }
-
   @Test
-  void shouldAddAOneTimeTask() {
+  void shouldAddAOneTimeTask() throws Exception {
     String payload = "{\"label\":\"An item\",\"type\":\"TASK\"}";
 
-    ResponseEntity<String> result =
-        restTemplate.postForEntity("/api/items", httpEntity(payload), String.class);
+    mockMvc.perform(post("/api/items").content(payload).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
 
-    assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
     verify(todoListService).addTask("An item");
   }
 
   @Test
-  void shouldAddAOneTimeTaskWithDeadline() {
+  void shouldAddAOneTimeTaskWithDeadline() throws Exception {
     String payload = "{\"label\":\"An item\",\"type\":\"TASK\",\"deadline\":\"2020-01-15\"}";
 
-    ResponseEntity<String> result =
-        restTemplate.postForEntity("/api/items", httpEntity(payload), String.class);
+    mockMvc.perform(post("/api/items").content(payload).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
 
-    assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
     verify(todoListService).addTaskWithDeadline("An item", LocalDate.of(2020, 1, 15));
   }
 
   @ParameterizedTest
   @MethodSource("recurringTaskCases")
-  void shouldAddARecurringTask(String periodAsString, Period periodExpected) {
+  void shouldAddARecurringTask(String periodAsString, Period periodExpected) throws Exception {
     String payload =
         String.format(
             "{\"label\":\"An item\",\"type\":\"RECURRING\",\"period\":\"%s\",\"frequency\":2}",
             periodAsString);
 
-    ResponseEntity<String> result =
-        restTemplate.postForEntity("/api/items", httpEntity(payload), String.class);
+    mockMvc.perform(post("/api/items").content(payload).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
 
-    assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
     verify(todoListService).addRecurringTask("An item", periodExpected);
   }
 
@@ -85,31 +70,26 @@ class TodoServiceControllerTest {
   }
 
   @Test
-  void shouldAddAShoppingItem() {
+  void shouldAddAShoppingItem() throws Exception {
     String payload = "{\"label\":\"An item\",\"type\":\"SHOPPING_ITEM\",\"amount\":2}";
 
-    ResponseEntity<String> result =
-        restTemplate.postForEntity("/api/items", httpEntity(payload), String.class);
+    mockMvc.perform(post("/api/items").content(payload).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
 
-    assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
     verify(todoListService).addShoppingItem("An item", 2);
   }
 
   @Test
-  void shouldCompleteAnItem() {
-    restTemplate.delete("/api/items/100");
+  void shouldCompleteAnItem() throws Exception {
+    mockMvc.perform(delete("/api/items/100")).andExpect(status().isOk());
 
     verify(todoListService).markCompleted("100");
   }
 
   @Test
-  void shouldUpdateRecurringTasks() {
-    restTemplate.put("/api/items:updateRecurring", "");
+  void shouldUpdateRecurringTasks() throws Exception {
+    mockMvc.perform(put("/api/items:updateRecurring")).andExpect(status().isOk());
 
     verify(todoListService).updateRecurringTasks();
-  }
-
-  private HttpEntity<String> httpEntity(String payload) {
-    return new HttpEntity<>(payload, httpHeaders);
   }
 }
