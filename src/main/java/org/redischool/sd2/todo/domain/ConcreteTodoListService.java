@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.Period;
 
+/**
+ * Concrete manager for the TODO list.
+ */
 @Service
 final class ConcreteTodoListService implements TodoListService {
   @Override

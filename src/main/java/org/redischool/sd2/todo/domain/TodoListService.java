@@ -3,6 +3,9 @@ package org.redischool.sd2.todo.domain;
 import java.time.LocalDate;
 import java.time.Period;
 
+/**
+ * Interface for managing the TODO list.
+ */
 public interface TodoListService {
   void addTask(String label);
 

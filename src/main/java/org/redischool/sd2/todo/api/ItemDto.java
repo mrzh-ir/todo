@@ -1,7 +1,13 @@
 package org.redischool.sd2.todo.api;
 
+/**
+ * Specifies the format of a TODO item between frontend and server.
+ *
+ * Each field corresponds to a JSON property.
+ */
 public final class ItemDto {
   private static long nextId = 0;
+
   private String id;
   private String label;
   private String type;

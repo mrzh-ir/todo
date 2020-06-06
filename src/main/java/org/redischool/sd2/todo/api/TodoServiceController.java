@@ -11,6 +11,9 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * Provides the endpoints allowing the frontend to communicate with the server.
+ */
 @RestController
 final class TodoServiceController {
   private final TodoListService todoListService;
