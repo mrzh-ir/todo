@@ -2,7 +2,6 @@ package org.redischool.sd2.todo.domain;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.List;
 
 public interface TodoListService {
   void addTask(String label);
