@@ -1,6 +1,6 @@
 # "Todo list" web application
 
-ReDI Munich Fall 2019 Software Development 2 Course
+ReDI Munich Spring 2020 Software Development 2 Course
 
 Mid-semseter project
 
