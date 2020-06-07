@@ -14,3 +14,7 @@ tasks.getByName<Jar>("jar") {
     into("static")
     dependsOn(tasks.findByName("npm_run_build"))
 }
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_11
+}

@@ -42,24 +42,22 @@ it is running, you should see output similar to the following:
  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
   '  |____| .__|_| |_|_| |_\__, | / / / /
  =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::        (v2.2.1.RELEASE)
+ :: Spring Boot ::        (v2.3.0.RELEASE)
 
-2019-11-16 18:51:16.111  INFO 11211 --- [           main] org.redischool.sd2.todo.TodoApplication  : Starting TodoApplication on ... with PID 11211 (.../todo/build/classes/java/main started by ... in .../todo)
-2019-11-16 18:51:16.115  INFO 11211 --- [           main] org.redischool.sd2.todo.TodoApplication  : No active profile set, falling back to default profiles: default
-2019-11-16 18:51:17.069  INFO 11211 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
-2019-11-16 18:51:17.080  INFO 11211 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2019-11-16 18:51:17.080  INFO 11211 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.27]
-2019-11-16 18:51:17.154  INFO 11211 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2019-11-16 18:51:17.155  INFO 11211 --- [           main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 982 ms
-2019-11-16 18:51:17.327  INFO 11211 --- [           main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
-2019-11-16 18:51:17.377  INFO 11211 --- [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
-2019-11-16 18:51:17.557  INFO 11211 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
-2019-11-16 18:51:17.569  INFO 11211 --- [           main] org.redischool.sd2.todo.TodoApplication  : Started TodoApplication in 1.914 seconds (JVM running for 2.428)
-2019-11-16 18:51:30.402  INFO 11211 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2019-11-16 18:51:30.403  INFO 11211 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2019-11-16 18:51:30.420  INFO 11211 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 16 ms
-<============--> 87% EXECUTING [1m 0s]
+2020-06-07 12:14:54.266  INFO 16859 --- [           main] org.redischool.sd2.todo.TodoApplication  : Starting TodoApplication on huitzilopochtli with PID 16859 (/home/hovinen/Programs/todo/build/classes/java/main started by hovinen in /home/hovinen/Programs/todo)
+2020-06-07 12:14:54.268  INFO 16859 --- [           main] org.redischool.sd2.todo.TodoApplication  : No active profile set, falling back to default profiles: default
+2020-06-07 12:14:55.046  INFO 16859 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2020-06-07 12:14:55.055  INFO 16859 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-06-07 12:14:55.055  INFO 16859 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.35]
+2020-06-07 12:14:55.107  INFO 16859 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-06-07 12:14:55.107  INFO 16859 --- [           main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 802 ms
+2020-06-07 12:14:55.237  INFO 16859 --- [           main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-06-07 12:14:55.279  INFO 16859 --- [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2020-06-07 12:14:55.343  INFO 16859 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2020-06-07 12:14:55.352  INFO 16859 --- [           main] org.redischool.sd2.todo.TodoApplication  : Started TodoApplication in 1.396 seconds (JVM running for 1.706)
+<============--> 91% EXECUTING [1m 0s]
 > :bootRun
 ```
 
-Once you see this, you may open `localhost:8080` in your browser and you should see the application.
+Once you see the last log message `Started TodoApplication`, you may open `localhost:8080` in your
+browser and you should see the application.
